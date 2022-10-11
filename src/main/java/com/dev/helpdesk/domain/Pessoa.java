@@ -13,36 +13,40 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-public  abstract class Pessoa implements Serializable {
-     private static final long serialVersionUID =1l;
+public abstract class Pessoa implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected  Integer id;
-    protected  String nome;
-    @Column(unique = true)
-    protected  String email;
-    protected  String senha;
-    @ElementCollection(fetch = FetchType.EAGER) 
-    protected Set<Integer> perfis = new HashSet<>();
-    @CollectionTable(name = "PERFIS")
-    @JsonFormat(pattern = "dd//MM/yyyy")
-    @Column(unique = true)
-    protected  String cpf;
+    protected Integer id;
+    protected String nome;
 
+  //  @Column(unique = true)
+    protected String cpf;
+
+   // @Column(unique = true)
+    protected String email;
+    protected String senha;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PERFIS")
+    protected Set<Integer> perfis = new HashSet<>();
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao = LocalDate.now();
 
-
     public Pessoa() {
-        AddtPerfis(Perfil.CLIENTE);
+
     }
 
-    public Pessoa(Integer id, String nome, String email, String senha, String cpf) {
+    public Pessoa(Integer id, String nome, String cpf, String email, String senha) {
+        super();
         this.id = id;
         this.nome = nome;
+        this.cpf = cpf;
         this.email = email;
         this.senha = senha;
-        this.cpf = cpf;
-        AddtPerfis(Perfil.CLIENTE);
+
     }
 
     public Integer getId() {
@@ -61,6 +65,14 @@ public  abstract class Pessoa implements Serializable {
         this.nome = nome;
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -77,12 +89,12 @@ public  abstract class Pessoa implements Serializable {
         this.senha = senha;
     }
 
-    public String getCpf() {
-        return cpf;
+    public Set<Perfil> getPerfis() {
+        return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void addPerfil(Perfil perfil) {
+        this.perfis.add(perfil.getCodigo());
     }
 
     public LocalDate getDataCriacao() {
@@ -93,22 +105,35 @@ public  abstract class Pessoa implements Serializable {
         this.dataCriacao = dataCriacao;
     }
 
-    public Set<Perfil> getPerfis() {
-        return perfis.stream().map(x->Perfil.toEnum(x)).collect(Collectors.toSet());
-    }
-
-    public void AddtPerfis(Perfil perfil) {
-        this.perfis.add(perfil.getCodigo());
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pessoa pessoa = (Pessoa) o;
-        return Objects.equals(id, pessoa.id) && Objects.equals(cpf, pessoa.cpf);
-    }
     @Override
     public int hashCode() {
-        return Objects.hash(id, cpf);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Pessoa other = (Pessoa) obj;
+        if (cpf == null) {
+            if (other.cpf != null)
+                return false;
+        } else if (!cpf.equals(other.cpf))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
 }

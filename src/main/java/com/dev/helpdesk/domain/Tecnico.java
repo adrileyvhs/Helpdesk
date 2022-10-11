@@ -1,6 +1,7 @@
 package com.dev.helpdesk.domain;
 
 import com.dev.helpdesk.domain.enums.Perfil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -10,23 +11,27 @@ import java.util.List;
 public class Tecnico extends Pessoa{
     private static final long serialVersionUID =1l;
 
+
+
+    @JsonIgnore
     @OneToMany(mappedBy = "tecnico")
     private List<Chamado> chamados = new ArrayList<>();
 
-    public  Tecnico(){
-        AddtPerfis(Perfil.CLIENTE);
+    public Tecnico() {
+        super();
+        addPerfil(Perfil.TECNICO);
     }
 
-    public Tecnico(Integer id, String nome, String email, String senha, String cpf) {
-        super(id, nome, email, senha, cpf);
-        AddtPerfis(Perfil.CLIENTE);
+    public Tecnico(Integer id, String nome, String cpf, String email, String senha) {
+        super(id, nome, cpf, email, senha);
+        addPerfil(Perfil.TECNICO);
     }
-
-    public List<Chamado> getChamandos() {
+    public List<Chamado> getChamados() {
         return chamados;
     }
 
-    public void setChamandos(List<Chamado> chamandos) {
-        this.chamados = chamandos;
+    public void setChamados(List<Chamado> chamados) {
+        this.chamados = chamados;
     }
+
 }

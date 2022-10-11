@@ -23,14 +23,14 @@ public class Dbservices {
     @Autowired
     private ChamandoRepository chamandoRepository;
 
-    public void instaciaDb(){
-        Tecnico tec = new Tecnico(null,"juca da silva","ADRILEYS@GMAIL.COM","123456","48784875894");
-        tec.AddtPerfis(Perfil.ADMIN);
-        Cliente cli = new Cliente(null,"jUSSARA","AnalUIZSA@gmail.com","123456","116125498745");
-        Chamado chamado = new Chamado(null, Prioridade.ALTA, Status.ENCERRADO,"chamndo 25","teste de chamando 25  ",tec,cli);
+    public void instanciaDb(){
+        Tecnico tec = new Tecnico(null,"saulo da silva","ADRIsLEYS@1.COM","123456","123");
+
+        Cliente cli = new Cliente(null,"mssaro","1@gmail.com","123456","222");
+         Chamado chamado = new Chamado(null, Prioridade.ALTA, Status.ENCERRADO,"chamndo 25","teste de chamando 25  ",tec,cli);
 
         tecnicoRepository.saveAll(Arrays.asList(tec));
-        clienteRepository.saveAll(Arrays.asList(cli));
+         clienteRepository.saveAll(Arrays.asList(cli));
         chamandoRepository.saveAll(Arrays.asList(chamado));
 
     }
