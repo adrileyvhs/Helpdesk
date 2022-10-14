@@ -14,7 +14,7 @@ public class DevConfig {
     private Dbservices dbservices;
 
     @Bean
-    public  void instanciadb(){
+    public void instanciadb() {
         dbservices.instanciaDb();
     }
 }

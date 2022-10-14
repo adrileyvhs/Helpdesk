@@ -1,7 +1,9 @@
 package com.dev.helpdesk.domain;
+
 import com.dev.helpdesk.domain.enums.Prioridade;
 import com.dev.helpdesk.domain.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
