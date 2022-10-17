@@ -8,29 +8,25 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ResourceExecptionHandler {
-    @ExceptionHandler(ObjectNotFoundException.class)
+@ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<StandardError> objectNotFoundException(ObjectNotFoundException ex,
                 HttpServletRequest request){
                StandardError erro = new StandardError(System.currentTimeMillis(),
                        HttpStatus.NOT_FOUND.value(),"Object not found",ex.getMessage(),request.getRequestURI());
                return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
-
-        @ExceptionHandler(ErroDataIntegrity.class)
+@ExceptionHandler(ErroDataIntegrity.class)
         public ResponseEntity<StandardError> erroDataInterity(ErroDataIntegrity ex,
                                                               HttpServletRequest request){
             StandardError erro = new StandardError(System.currentTimeMillis(),
                     HttpStatus.BAD_REQUEST.value(),"Violação de Dados Erro 25",ex.getMessage(),request.getRequestURI());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-    }
-
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+}
+@ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> erroDataInterity(MethodArgumentNotValidException ex,
                                          HttpServletRequest request){
         ValidacaoError error = new ValidacaoError(System.currentTimeMillis()
@@ -42,7 +38,6 @@ public class ResourceExecptionHandler {
         for(FieldError x : ex.getBindingResult().getFieldErrors()){
               error.AddErrors(x.getField(),x.getDefaultMessage());
         }
-
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

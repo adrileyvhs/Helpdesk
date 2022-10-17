@@ -3,12 +3,15 @@ package com.dev.helpdesk.resources;
 import com.dev.helpdesk.domain.Tecnico;
 import com.dev.helpdesk.domain.dtos.TecnicoDto;
 import com.dev.helpdesk.services.TecnicoService;
+import net.bytebuddy.asm.Advice;
+import org.aspectj.apache.bcel.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,9 +43,17 @@ public class TecnicoResource {
                 .path("/{id}").buildAndExpand(tecnico.getId())
                 .toUri();
         return  ResponseEntity.created(uri).build();
-
-
     }
+     @PutMapping(value = "/{id}")
+    public ResponseEntity<TecnicoDto> update(@PathVariable Integer id, @Validated @RequestBody TecnicoDto tcdto) {
+         Tecnico tecObj = service.update(id, tcdto);
+         return ResponseEntity.ok().body(new TecnicoDto(tecObj));
+     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<TecnicoDto> delete(@PathVariable Integer id) {
+       service.delete(id);
+         return ResponseEntity.noContent().build();
+    }
 
 }

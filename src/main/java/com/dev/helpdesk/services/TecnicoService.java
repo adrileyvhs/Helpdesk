@@ -7,8 +7,11 @@ import com.dev.helpdesk.domain.dtos.TecnicoDto;
 import com.dev.helpdesk.services.Exception.ErroDataIntegrity;
 import com.dev.helpdesk.services.Exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +38,20 @@ public class TecnicoService {
         Tecnico tecnico = new Tecnico(tcdto);
         return  repository.save(tecnico);
     }
-
+    public Tecnico update(Integer id, @Validated TecnicoDto TecDto) {
+        TecDto.setId(id);
+        Tecnico OldTec = findById(id);
+        validaCpfEmail(TecDto);
+        OldTec = new Tecnico(TecDto);
+          return repository.save(OldTec);
+    }
+    public void delete(Integer id) {
+      Tecnico tecobj = findById(id);
+      if(tecobj.getChamados().size()>0) {
+          throw new ErroDataIntegrity("Técnico Possui Ordens de Serviços é não pode ser deletado");
+      }
+       repository.deleteById(id);
+    }
     private void validaCpfEmail(TecnicoDto tcdto) {
         Optional<Pessoa> obj = pessoaRepository.findByCpf(tcdto.getCpf());
         if(obj.isPresent() && obj.get().getId() !=tcdto.getId()){

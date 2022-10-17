@@ -1,10 +1,13 @@
 package com.dev.helpdesk.resources;
 
 import com.dev.helpdesk.domain.Cliente;
+import com.dev.helpdesk.domain.Tecnico;
 import com.dev.helpdesk.domain.dtos.ClienteDto;
+import com.dev.helpdesk.domain.dtos.TecnicoDto;
 import com.dev.helpdesk.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -40,4 +43,16 @@ public class ClienteResource {
                 .toUri();
         return ResponseEntity.created(uri).build();
     }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ClienteDto> update(@PathVariable Integer id, @Validated @RequestBody ClienteDto Clidto) {
+        Cliente CliObj = service.update(id, Clidto);
+        return ResponseEntity.ok().body(new ClienteDto(CliObj));
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<ClienteDto> delete(@PathVariable Integer id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

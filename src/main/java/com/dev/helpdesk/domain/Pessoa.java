@@ -2,6 +2,7 @@ package com.dev.helpdesk.domain;
 
 import com.dev.helpdesk.domain.enums.Perfil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,6 +23,7 @@ public abstract class Pessoa implements Serializable {
     protected String nome;
 
     //  @Column(unique = true)
+    //@CPF
     protected String cpf;
 
     // @Column(unique = true)
