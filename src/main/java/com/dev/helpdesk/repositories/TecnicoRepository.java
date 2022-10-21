@@ -1,4 +1,4 @@
-package com.dev.helpdesk.Repository;
+package com.dev.helpdesk.repositories;
 
 
 import com.dev.helpdesk.domain.Tecnico;

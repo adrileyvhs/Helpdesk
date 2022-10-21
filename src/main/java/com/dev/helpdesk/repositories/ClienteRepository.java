@@ -1,7 +1,6 @@
-package com.dev.helpdesk.Repository;
+package com.dev.helpdesk.repositories;
 
 import com.dev.helpdesk.domain.Cliente;
-import com.dev.helpdesk.domain.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClienteRepository extends JpaRepository<Cliente,Integer> {

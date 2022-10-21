@@ -1,66 +1,81 @@
 package com.dev.helpdesk.services;
 
-import com.dev.helpdesk.Repository.ClienteRepository;
-import com.dev.helpdesk.Repository.PessoaRepository;
-import com.dev.helpdesk.domain.Cliente;
-import com.dev.helpdesk.domain.Pessoa;
-import com.dev.helpdesk.domain.Tecnico;
-import com.dev.helpdesk.domain.dtos.ClienteDto;
-import com.dev.helpdesk.domain.dtos.TecnicoDto;
-import com.dev.helpdesk.services.Exception.ErroDataIntegrity;
-import com.dev.helpdesk.services.Exception.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.dev.helpdesk.domain.Cliente;
+import com.dev.helpdesk.domain.Pessoa;
+import com.dev.helpdesk.domain.dtos.ClienteDTO;
+import com.dev.helpdesk.repositories.ClienteRepository;
+import com.dev.helpdesk.repositories.PessoaRepository;
+import com.dev.helpdesk.services.exceptions.DataIntegrityViolationException;
+import com.dev.helpdesk.services.exceptions.ObjectnotFoundException;
+
 @Service
 public class ClienteService {
-    @Autowired
-    private ClienteRepository repository;
 
-    @Autowired
-    private PessoaRepository pessoaRepository;
+	@Autowired
+	private ClienteRepository repository;
+	@Autowired
+	private PessoaRepository pessoaRepository;
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 
-    public Cliente findById(Integer id) {
-        Optional<Cliente> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto Não Encontrado id:  " + id));
-    }
+	public Cliente findById(Integer id) {
+		Optional<Cliente> obj = repository.findById(id);
+		return obj.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
+	}
 
-    public List<Cliente> findAll() {
-        return repository.findAll();
-    }
-    public Cliente create(ClienteDto clidto) {
-        clidto.setId(null);
-        Cliente cliente = new Cliente(clidto);
-        return  repository.save(cliente);
-    }
-    public Cliente update(Integer id, @Validated ClienteDto Clidto) {
-        Clidto.setId(id);
-        Cliente OldCliente = findById(id);
-        //validaCpfEmail(Clidto);
-        OldCliente = new Cliente(Clidto);
-        return repository.save(OldCliente);
-    }
-    public void delete(Integer id) {
-        Cliente CliObj = findById(id);
-        if(CliObj.getChamados().size()>0) {
-            throw new ErroDataIntegrity("Cliente Possui Ordens de Serviços é não pode ser deletado");
-        }
-        repository.deleteById(id);
-    }
-    private void validaCpfEmail(ClienteDto Clidto) {
-        Optional<Pessoa> obj = pessoaRepository.findByCpf(Clidto.getCpf());
-        if(obj.isPresent() && obj.get().getId() !=Clidto.getId()){
-            throw new ErroDataIntegrity("Cpf já cadastrado no sistema ");
-        }
-        obj = pessoaRepository.findByEmail(Clidto.getEmail());
-        if(obj.isPresent() && obj.get().getId() !=Clidto.getId()){
-            throw new ErroDataIntegrity("Email já cadastrado no sistema ");
-        }
-    }
+	public List<Cliente> findAll() {
+		return repository.findAll();
+	}
+
+	public Cliente create(ClienteDTO objDTO) {
+		objDTO.setId(null);
+		objDTO.setSenha(encoder.encode(objDTO.getSenha()));
+		validaPorCpfEEmail(objDTO);
+		Cliente newObj = new Cliente(objDTO);
+		return repository.save(newObj);
+	}
+
+	public Cliente update(Integer id, @Valid ClienteDTO objDTO) {
+		objDTO.setId(id);
+		Cliente oldObj = findById(id);
+		
+		if(!objDTO.getSenha().equals(oldObj.getSenha())) 
+			objDTO.setSenha(encoder.encode(objDTO.getSenha()));
+		
+		validaPorCpfEEmail(objDTO);
+		oldObj = new Cliente(objDTO);
+		return repository.save(oldObj);
+	}
+
+	public void delete(Integer id) {
+		Cliente obj = findById(id);
+
+		if (obj.getChamados().size() > 0) {
+			throw new DataIntegrityViolationException("Cliente possui ordens de serviço e não pode ser deletado!");
+		}
+
+		repository.deleteById(id);
+	}
+
+	private void validaPorCpfEEmail(ClienteDTO objDTO) {
+		Optional<Pessoa> obj = pessoaRepository.findByCpf(objDTO.getCpf());
+		if (obj.isPresent() && obj.get().getId() != objDTO.getId()) {
+			throw new DataIntegrityViolationException("CPF já cadastrado no sistema!");
+		}
+
+		obj = pessoaRepository.findByEmail(objDTO.getEmail());
+		if (obj.isPresent() && obj.get().getId() != objDTO.getId()) {
+			throw new DataIntegrityViolationException("E-mail já cadastrado no sistema!");
+		}
+	}
+
 }
-
-
