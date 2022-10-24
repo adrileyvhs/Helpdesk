@@ -7,13 +7,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
+import lombok.Data;
+
 
 import org.hibernate.validator.constraints.br.CPF;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.dev.helpdesk.domain.Cliente;
 import com.dev.helpdesk.domain.enums.Perfil;
-
+@Data
 public class ClienteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -21,7 +23,7 @@ public class ClienteDTO implements Serializable {
 	@NotNull(message = "O campo NOME é requerido")
 	protected String nome;
 	@NotNull(message = "O campo CPF é requerido")
-	@CPF
+	//@CPF
 	protected String cpf;
 	@NotNull(message = "O campo EMAIL é requerido")
 	protected String email;
@@ -49,45 +51,45 @@ public class ClienteDTO implements Serializable {
 		addPerfil(Perfil.CLIENTE);
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
+//	public Integer getId() {
+//		return id;
+//	}
+//
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
+//
+//	public String getNome() {
+//		return nome;
+//	}
+//
+//	public void setNome(String nome) {
+//		this.nome = nome;
+//	}
+//
+//	public String getCpf() {
+//		return cpf;
+//	}
+//
+//	public void setCpf(String cpf) {
+//		this.cpf = cpf;
+//	}
+//
+//	public String getEmail() {
+//		return email;
+//	}
+//
+//	public void setEmail(String email) {
+//		this.email = email;
+//	}
+//
+//	public String getSenha() {
+//		return senha;
+//	}
+//
+//	public void setSenha(String senha) {
+//		this.senha = senha;
+//	}
 
 	public Set<Perfil> getPerfis() {
 		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
@@ -97,12 +99,12 @@ public class ClienteDTO implements Serializable {
 		this.perfis.add(perfil.getCodigo());
 	}
 
-	public LocalDate getDataCriacao() {
-		return dataCriacao;
-	}
-
-	public void setDataCriacao(LocalDate dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	}
+//	public LocalDate getDataCriacao() {
+//		return dataCriacao;
+//	}
+//
+//	public void setDataCriacao(LocalDate dataCriacao) {
+//		this.dataCriacao = dataCriacao;
+//	}
 
 }

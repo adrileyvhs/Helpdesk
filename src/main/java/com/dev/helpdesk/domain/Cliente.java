@@ -24,21 +24,16 @@ public class Cliente extends Pessoa {
 		super();
 		addPerfil(Perfil.CLIENTE);
 	}
-
 	public Cliente(Integer id, String nome, String cpf, String email, String senha) {
 		super(id, nome, cpf, email, senha);
 		addPerfil(Perfil.CLIENTE);
 	}
-
-
 	public List<Chamado> getChamados() {
 		return chamados;
 	}
-
 	public void setChamados(List<Chamado> chamados) {
 		this.chamados = chamados;
 	}
-
 	public Cliente(ClienteDTO cliente) {
 		this.id = cliente.getId();
 		this.nome = cliente.getNome();
@@ -48,6 +43,5 @@ public class Cliente extends Pessoa {
 		this.perfis = cliente.getPerfis().stream().map(x -> x.getCodigo()).collect(Collectors.toSet());
 		this.dataCriacao = cliente.getDataCriacao();
 	}
-
 
 }
